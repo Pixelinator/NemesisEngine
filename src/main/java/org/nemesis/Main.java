@@ -22,21 +22,24 @@ public class Main {
 		StaticShader shader = new StaticShader();
 		Renderer renderer = new Renderer( shader );
 
-		RawModel model = OBJLoader.loadObjModel( "stall", loader );
-		ModelTexture texture = new ModelTexture( loader.loadTexture( "stallTexture" ) );
+		RawModel model = OBJLoader.loadObjModel( "dragon", loader );
+		ModelTexture texture = new ModelTexture( loader.loadTexture( "white" ) );
 		TexturedModel texturedModel = new TexturedModel( model, texture );
 
 		Entity entity = entityManager.createEntity();
-		entity.addComponent( new TransformComponent( new Vector3f( 0, 0, 0 ), new Vector3f( 0, 0, 0 ), new Vector3f( 1, 1, 1 ) ) );
+		entity.addComponent( new TransformComponent( new Vector3f( 0, 0, -25 ), new Vector3f( 0, 0, 0 ), new Vector3f( 1, 1, 1 ) ) );
 		entity.addComponent( new MeshComponent( texturedModel ) );
+
+		Light light = new Light( new Vector3f(0,0,-20), new Vector3f(1,1,1) );
 
 		Camera camera = new Camera();
 
 		while ( !glfwWindowShouldClose( DisplayManager.window ) ) {
 			camera.move();
 			renderer.prepare();
-			shader.start();
 			entityManager.updateAllEntities( 0f );
+			shader.start();
+			shader.loadLight( light );
 			shader.loadViewMatrix( camera );
 			renderer.render( entity, shader );
 			shader.stop();

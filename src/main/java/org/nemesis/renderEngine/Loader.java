@@ -35,11 +35,12 @@ public class Loader {
 	 *            example a quad).
 	 * @return The loaded model.
 	 */
-	public RawModel loadToVAO( float[] positions, float[] textureCoords, int[] indices) {
+	public RawModel loadToVAO( float[] positions, float[] textureCoords, float[] normals, int[] indices) {
 		int vaoID = createVAO();
 		bindIndicesBuffer(indices);
 		storeDataInAttributeList(0, 3, positions);
 		storeDataInAttributeList(1, 2, textureCoords);
+		storeDataInAttributeList(2, 3, normals);
 		unbindVAO();
 		return new RawModel(vaoID, indices.length);
 	}
