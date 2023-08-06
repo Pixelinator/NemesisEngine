@@ -23,7 +23,9 @@ public class Main {
 		Renderer renderer = new Renderer( shader );
 
 		RawModel model = OBJLoader.loadObjModel( "dragon", loader );
-		ModelTexture texture = new ModelTexture( loader.loadTexture( "white" ) );
+		ModelTexture texture = new ModelTexture( loader.loadTexture( "purple" ) );
+		texture.setShineDamper( 10 );
+		texture.setReflectivity( 1 );
 		TexturedModel texturedModel = new TexturedModel( model, texture );
 
 		Entity entity = entityManager.createEntity();

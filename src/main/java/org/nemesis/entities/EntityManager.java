@@ -6,7 +6,7 @@ import java.util.Map;
 public class EntityManager {
 
 	private int nextEntityId;
-	private Map<Integer, Entity> entities;
+	private final Map<Integer, Entity> entities;
 
 	public EntityManager() {
 		nextEntityId = 1;

@@ -11,6 +11,7 @@ import org.nemesis.entities.TransformComponent;
 import org.nemesis.models.RawModel;
 import org.nemesis.models.TexturedModel;
 import org.nemesis.shaders.StaticShader;
+import org.nemesis.textures.ModelTexture;
 import org.nemesis.utils.Maths;
 
 /**
@@ -40,7 +41,7 @@ public class Renderer {
 	public void prepare () {
 		GL11.glEnable( GL11.GL_DEPTH_TEST );
 		GL11.glClear( GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT );
-		GL11.glClearColor( 1, 0, 0, 1 );
+		GL11.glClearColor( 0.5f, 0.16f, 0.12f, 1 );
 	}
 
 	/**
@@ -76,6 +77,8 @@ public class Renderer {
 		GL20.glEnableVertexAttribArray( 2 );
 		Matrix4f transformationMatrix = Maths.createTransformationMatrix( transform.position, transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.scale.x );
 		shader.loadTransformationMatrix( transformationMatrix );
+		ModelTexture texture = texturedModel.getTexture();
+		shader.loadShineVariables( texture.getShineDamper(), texture.getReflectivity() );
 		GL13.glActiveTexture( GL13.GL_TEXTURE0 );
 		GL11.glBindTexture( GL11.GL_TEXTURE_2D, texturedModel.getTexture().getTextureID() );
 		GL11.glDrawElements( GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0 );

@@ -7,8 +7,8 @@ import java.util.Map;
 
 public class Entity {
 
-	private int id;
-	private Map<Class<?>, Object> components;
+	private final int id;
+	private final Map<Class<?>, Object> components;
 
 
 	public Entity ( int id ) {
