@@ -17,22 +17,22 @@ public class Camera {
 
 	public void move() {
 		if (Keyboard.isKeyDown(GLFW_KEY_W) || Keyboard.isKeyDown(GLFW_KEY_UP)) {
-			position.z -= 0.02f;
+			position.z -= 0.2f;
 		}
 		if (Keyboard.isKeyDown(GLFW_KEY_S) || Keyboard.isKeyDown(GLFW_KEY_DOWN)) {
-			position.z += 0.02f;
+			position.z += 0.2f;
 		}
 		if (Keyboard.isKeyDown(GLFW_KEY_A) || Keyboard.isKeyDown(GLFW_KEY_LEFT)) {
-			position.x -= 0.02f;
+			position.x -= 0.2f;
 		}
 		if (Keyboard.isKeyDown(GLFW_KEY_D) || Keyboard.isKeyDown(GLFW_KEY_RIGHT)) {
-			position.x += 0.02f;
+			position.x += 0.2f;
 		}
 		if (Keyboard.isKeyDown(GLFW_KEY_SPACE)) {   // Go up
-			position.y += 0.02f;
+			position.y += 0.2f;
 		}
 		if (Keyboard.isKeyDown(GLFW_KEY_LEFT_SHIFT)) {  // Go down
-			position.y -= 0.02f;
+			position.y -= 0.2f;
 		}
 	}
 

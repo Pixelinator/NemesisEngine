@@ -25,11 +25,10 @@ import static org.lwjgl.system.MemoryUtil.NULL;
  * DisplayManager.createDisplay();
  * <p>
  * while (!glfwWindowShouldClose(DisplayManager.window)) {
- * 	DisplayManager.updateDisplay();
+ * DisplayManager.updateDisplay();
  * }
  * <p>
  * DisplayManager.closeDisplay();
- *
  */
 public class DisplayManager {
 	private static final int WIDTH = 1280;
@@ -74,13 +73,13 @@ public class DisplayManager {
 			throw new RuntimeException( "Failed to create the GLFW window" );
 		}
 
-		glfwSetKeyCallback(window, new Keyboard());
+		glfwSetKeyCallback( window, new Keyboard() );
 		// Setup a key callback. It will be called every time a key is pressed, repeated or released.
-		glfwSetKeyCallback( window, ( window, key, scancode, action, mods ) -> {
-			if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE ) {
-				glfwSetWindowShouldClose( window, true ); // We will detect this in the rendering loop
-			}
-		} );
+		//		glfwSetKeyCallback( window, ( window, key, scancode, action, mods ) -> {
+		//			if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE ) {
+		//				glfwSetWindowShouldClose( window, true ); // We will detect this in the rendering loop
+		//			}
+		//		} );
 
 		// Get the thread stack and push a new frame
 		try ( MemoryStack stack = stackPush() ) {
