@@ -14,6 +14,9 @@ import org.nemesis.shaders.StaticShader;
 import org.nemesis.textures.ModelTexture;
 import org.nemesis.utils.Maths;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Handles the rendering of a model to the screen.
  */
@@ -23,8 +26,12 @@ public class Renderer {
 	private static final float NEAR_PLANE = 0.1f;
 	private static final float FAR_PLANE = 1000;
 	private Matrix4f projectionMatrix;
+	private StaticShader shader;
 
 	public Renderer ( StaticShader shader ) {
+		this.shader = shader;
+		GL11.glEnable( GL11.GL_CULL_FACE );
+		GL11.glCullFace( GL11.GL_BACK );
 		createProjectionMatrix();
 		shader.start();
 		shader.loadProjectionMatrix( projectionMatrix );
@@ -44,48 +51,43 @@ public class Renderer {
 		GL11.glClearColor( 0.5f, 0.16f, 0.12f, 1 );
 	}
 
-	/**
-	 * Renders a model to the screen.
-	 * <p>
-	 * Before we can render a VAO it needs to be made active, and we can do this
-	 * by binding it. We also need to enable the relevant attributes of the VAO,
-	 * which in this case is just attribute 0 where we stored the position data.
-	 * <p>
-	 * The VAO can then be rendered to the screen using glDrawElements(). Using
-	 * this draw method tells OpenGL that we want to use the index buffer to
-	 * determine how the vertices should be connected instead of just connecting
-	 * the vertices together in the order that they are stored in the VAO.
-	 * <p>
-	 * We tell it what type of shapes to render and the number of vertices that
-	 * it needs to render. We also tell it was format the index data is in (we
-	 * used ints) and finally we indicate where in the index buffer it should
-	 * start rendering. We want it to start right at the beginning and render
-	 * everything, so we put 0.
-	 * <p>
-	 * After rendering we unbind the VAO and disable the attribute.
-	 *
-	 * @param entity - The entity to be rendered.
-	 * @param shader
-	 */
-	public void render ( Entity entity, StaticShader shader ) {
-		TransformComponent transform = entity.getComponent( TransformComponent.class );
-		TexturedModel texturedModel = entity.getComponent( MeshComponent.class ).mesh;
+	public void render ( Map<TexturedModel, List<Entity>> entities ) {
+//		TexturedModel texturedModel = entity.getComponent( MeshComponent.class ).mesh;
+		for ( TexturedModel model : entities.keySet() ) {
+			prepareTexturedModel( model );
+			List<Entity> batch = entities.get( model );
+			for ( Entity entity : batch ) {
+				prepareInstance( entity );
+				GL11.glDrawElements( GL11.GL_TRIANGLES, model.getRawModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0 );
+			}
+			unbindTexturedModel();
+		}
+	}
+
+	private void prepareTexturedModel ( TexturedModel texturedModel ) {
 		RawModel model = texturedModel.getRawModel();
 		GL30.glBindVertexArray( model.getVaoID() );
 		GL20.glEnableVertexAttribArray( 0 );
 		GL20.glEnableVertexAttribArray( 1 );
 		GL20.glEnableVertexAttribArray( 2 );
-		Matrix4f transformationMatrix = Maths.createTransformationMatrix( transform.position, transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.scale.x );
-		shader.loadTransformationMatrix( transformationMatrix );
+
 		ModelTexture texture = texturedModel.getTexture();
 		shader.loadShineVariables( texture.getShineDamper(), texture.getReflectivity() );
 		GL13.glActiveTexture( GL13.GL_TEXTURE0 );
 		GL11.glBindTexture( GL11.GL_TEXTURE_2D, texturedModel.getTexture().getTextureID() );
-		GL11.glDrawElements( GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0 );
+	}
+
+	private void unbindTexturedModel () {
 		GL20.glDisableVertexAttribArray( 0 );
 		GL20.glDisableVertexAttribArray( 1 );
 		GL20.glDisableVertexAttribArray( 2 );
 		GL30.glBindVertexArray( 0 );
+	}
+
+	private void prepareInstance ( Entity entity ) {
+		TransformComponent transform = entity.getComponent( TransformComponent.class );
+		Matrix4f transformationMatrix = Maths.createTransformationMatrix( transform.position, transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.scale.x );
+		shader.loadTransformationMatrix( transformationMatrix );
 	}
 
 	private void createProjectionMatrix () {

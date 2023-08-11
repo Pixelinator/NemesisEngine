@@ -4,10 +4,7 @@ import org.joml.Vector3f;
 import org.nemesis.entities.*;
 import org.nemesis.models.RawModel;
 import org.nemesis.models.TexturedModel;
-import org.nemesis.renderEngine.DisplayManager;
-import org.nemesis.renderEngine.Loader;
-import org.nemesis.renderEngine.OBJLoader;
-import org.nemesis.renderEngine.Renderer;
+import org.nemesis.renderEngine.*;
 import org.nemesis.shaders.StaticShader;
 import org.nemesis.textures.ModelTexture;
 
@@ -19,8 +16,7 @@ public class Main {
 		DisplayManager.createDisplay();
 		EntityManager entityManager = new EntityManager();
 		Loader loader = new Loader();
-		StaticShader shader = new StaticShader();
-		Renderer renderer = new Renderer( shader );
+		MasterRenderer masterRenderer = new MasterRenderer();
 
 		RawModel model = OBJLoader.loadObjModel( "dragon", loader );
 		ModelTexture texture = new ModelTexture( loader.loadTexture( "purple" ) );
@@ -38,17 +34,12 @@ public class Main {
 
 		while ( !glfwWindowShouldClose( DisplayManager.window ) ) {
 			camera.move();
-			renderer.prepare();
 			entityManager.updateAllEntities( 0f );
-			shader.start();
-			shader.loadLight( light );
-			shader.loadViewMatrix( camera );
-			renderer.render( entity, shader );
-			shader.stop();
+			masterRenderer.processEntity( entity );
+			masterRenderer.render( light, camera );
 			DisplayManager.updateDisplay();
 		}
-
-		shader.cleanUp();
+		masterRenderer.cleanUp();
 		loader.cleanUp();
 		DisplayManager.closeDisplay();
 	}
