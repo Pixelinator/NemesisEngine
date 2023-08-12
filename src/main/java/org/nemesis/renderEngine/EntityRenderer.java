@@ -33,7 +33,6 @@ public class EntityRenderer {
 	}
 
 	public void render ( Map<TexturedModel, List<Entity>> entities ) {
-//		TexturedModel texturedModel = entity.getComponent( MeshComponent.class ).mesh;
 		for ( TexturedModel model : entities.keySet() ) {
 			prepareTexturedModel( model );
 			List<Entity> batch = entities.get( model );
@@ -53,12 +52,18 @@ public class EntityRenderer {
 		GL20.glEnableVertexAttribArray( 2 );
 
 		ModelTexture texture = texturedModel.getTexture();
+		if( texture.isHasTransparency() )
+		{
+			MasterRenderer.disableCulling();
+		}
+		shader.loadFakeLightingVariable( texture.isUseFakeLighting() );
 		shader.loadShineVariables( texture.getShineDamper(), texture.getReflectivity() );
 		GL13.glActiveTexture( GL13.GL_TEXTURE0 );
 		GL11.glBindTexture( GL11.GL_TEXTURE_2D, texture.getTextureID() );
 	}
 
 	private void unbindTexturedModel () {
+		MasterRenderer.enableCulling();
 		GL20.glDisableVertexAttribArray( 0 );
 		GL20.glDisableVertexAttribArray( 1 );
 		GL20.glDisableVertexAttribArray( 2 );

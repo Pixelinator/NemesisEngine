@@ -16,6 +16,5 @@ public class TransformComponent implements Updateable {
 
 	@Override
 	public void update ( float deltaTime ) {
-		this.rotation.y += 0.1f;
 	}
 }
