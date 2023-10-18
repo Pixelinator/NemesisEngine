@@ -62,7 +62,7 @@ dependencies {
     implementation "org.lwjgl:lwjgl-xxhash"
     implementation "org.lwjgl:lwjgl-yoga"
     implementation "org.lwjgl:lwjgl-zstd"
-    implementation "org.jmonkeyengine:jbullet:2.0.4"
+    implementation "cz.advel.jbullet:jbullet:20101010-1"
     runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-assimp::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-bgfx::$lwjglNatives"
