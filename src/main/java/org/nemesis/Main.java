@@ -10,6 +10,8 @@ import org.nemesis.renderEngine.MasterRenderer;
 import org.nemesis.renderEngine.OBJLoader;
 import org.nemesis.terrains.Terrain;
 import org.nemesis.textures.ModelTexture;
+import org.nemesis.textures.TerrainTexture;
+import org.nemesis.textures.TerrainTexturePack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,13 @@ public class Main {
 		MasterRenderer masterRenderer = new MasterRenderer();
 
 		// put this into a config
+		TerrainTexture backgroundTexture = new TerrainTexture( loader.loadTexture("grassy2") );
+		TerrainTexture rTexture = new TerrainTexture( loader.loadTexture("mud") );
+		TerrainTexture gTexture = new TerrainTexture( loader.loadTexture("grassFlowers") );
+		TerrainTexture bTexture = new TerrainTexture( loader.loadTexture("path") );
+		TerrainTexturePack texturePack = new TerrainTexturePack( backgroundTexture, rTexture, gTexture, bTexture );
+		TerrainTexture blendMap = new TerrainTexture( loader.loadTexture("blendMap") );
+
 		ModelTexture texture = new ModelTexture( loader.loadTexture( "purple" ) );
 		texture.setShineDamper( 10 );
 		texture.setReflectivity( 1 );
@@ -57,10 +66,10 @@ public class Main {
 		}
 		Light light = new Light( new Vector3f( 0, 0, -20 ), new Vector3f( 1, 1, 1 ) );
 		List<Terrain> terrains = new ArrayList<>();
-		Terrain terrain1 = new Terrain( 0, 0, loader, grassTexture );
-		Terrain terrain2 = new Terrain( -1, 0, loader, grassTexture );
-		Terrain terrain3 = new Terrain( 0, -1, loader, grassTexture );
-		Terrain terrain4 = new Terrain( -1, -1, loader, grassTexture );
+		Terrain terrain1 = new Terrain( 0, 0, loader, texturePack, blendMap );
+		Terrain terrain2 = new Terrain( -1, 0, loader, texturePack, blendMap );
+		Terrain terrain3 = new Terrain( 0, -1, loader, texturePack, blendMap );
+		Terrain terrain4 = new Terrain( -1, -1, loader, texturePack, blendMap );
 		terrains.add( terrain1 );
 		terrains.add( terrain2 );
 		terrains.add( terrain3 );
