@@ -25,6 +25,7 @@ public class Main {
 		EntityManager entityManager = new EntityManager();
 		MasterRenderer masterRenderer = new MasterRenderer();
 
+		// put this into a config
 		ModelTexture texture = new ModelTexture( loader.loadTexture( "purple" ) );
 		texture.setShineDamper( 10 );
 		texture.setReflectivity( 1 );
@@ -33,19 +34,15 @@ public class Main {
 		grassTex.setHasTransparency( true );
 		grassTex.setUseFakeLighting( true );
 		ModelTexture fernTex = new ModelTexture( loader.loadTexture( "fern" ) );
-
 		RawModel model = OBJLoader.loadObjModel( "dragon", loader );
 		RawModel grassRaw = OBJLoader.loadObjModel( "grassModel", loader );
 		RawModel fernRaw = OBJLoader.loadObjModel( "fern", loader );
-
 		TexturedModel texturedModel = new TexturedModel( model, texture );
 		TexturedModel grassModel = new TexturedModel( grassRaw, grassTex );
 		TexturedModel fernModel = new TexturedModel( fernRaw, fernTex );
-
 		Entity entity = entityManager.createEntity();
 		entity.addComponent( new TransformComponent( new Vector3f( 0, 0, -25 ), new Vector3f( 0, 0, 0 ), new Vector3f( 1, 1, 1 ) ) );
 		entity.addComponent( new MeshComponent( texturedModel ) );
-
 		List<Entity> entities = new ArrayList<>();
 		Random random = new Random();
 		for ( int i = 0 ; i < 500 ; i++ ) {
@@ -58,13 +55,17 @@ public class Main {
 			f.addComponent( new MeshComponent( fernModel ) );
 			entities.add( f );
 		}
-
 		Light light = new Light( new Vector3f( 0, 0, -20 ), new Vector3f( 1, 1, 1 ) );
-
+		List<Terrain> terrains = new ArrayList<>();
 		Terrain terrain1 = new Terrain( 0, 0, loader, grassTexture );
 		Terrain terrain2 = new Terrain( -1, 0, loader, grassTexture );
 		Terrain terrain3 = new Terrain( 0, -1, loader, grassTexture );
 		Terrain terrain4 = new Terrain( -1, -1, loader, grassTexture );
+		terrains.add( terrain1 );
+		terrains.add( terrain2 );
+		terrains.add( terrain3 );
+		terrains.add( terrain4 );
+		// end of config
 
 		Camera camera = new Camera();
 
@@ -75,10 +76,9 @@ public class Main {
 			for ( Entity e : entities ) {
 				masterRenderer.processEntity( e );
 			}
-			masterRenderer.processTerrain( terrain1 );
-			masterRenderer.processTerrain( terrain2 );
-			masterRenderer.processTerrain( terrain3 );
-			masterRenderer.processTerrain( terrain4 );
+			for ( Terrain t : terrains ) {
+				masterRenderer.processTerrain( t );
+			}
 			masterRenderer.render( light, camera );
 			DisplayManager.updateDisplay();
 		}
