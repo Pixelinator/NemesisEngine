@@ -4,6 +4,7 @@ import org.nemesis.components.MeshComponent;
 import org.nemesis.components.TransformComponent;
 import org.nemesis.renderEngine.DisplayManager;
 import org.nemesis.renderEngine.Keyboard;
+import org.nemesis.terrains.Terrain;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -26,7 +27,7 @@ public class Player extends Entity {
 		this.addComponent( meshComponent );
 	}
 
-	public void move() {
+	public void move( Terrain terrain ) {
 		checkInputs();
 		this.getComponent( TransformComponent.class ).rotation.y += currentTurnSpeed * DisplayManager.getFrameTimeSeconds();
 		float distance = currentSpeed * DisplayManager.getFrameTimeSeconds();
@@ -36,9 +37,10 @@ public class Player extends Entity {
 		this.getComponent( TransformComponent.class ).position.z += dz;
 		this.upwardsSpeed += GRAVITY * DisplayManager.getFrameTimeSeconds();
 		this.getComponent( TransformComponent.class ).position.y += upwardsSpeed * DisplayManager.getFrameTimeSeconds();
-		if(this.getComponent( TransformComponent.class ).position.y <= TERRAIN_HEIGHT) {
+		float terrainHeight = terrain.getHeightOfTerrain( this.getComponent( TransformComponent.class ).position.x, this.getComponent( TransformComponent.class ).position.z );
+		if(this.getComponent( TransformComponent.class ).position.y <= terrainHeight) {
 			upwardsSpeed = 0;
-			this.getComponent( TransformComponent.class ).position.y = TERRAIN_HEIGHT;
+			this.getComponent( TransformComponent.class ).position.y = terrainHeight;
 		}
 	}
 

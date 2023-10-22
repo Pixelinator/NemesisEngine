@@ -75,14 +75,14 @@ public class Main {
 		}
 		Light light = new Light( new Vector3f( 0, 0, -20 ), new Vector3f( 1, 1, 1 ) );
 		List<Terrain> terrains = new ArrayList<>();
-		Terrain terrain1 = new Terrain( 0, 0, loader, texturePack, blendMap );
-		Terrain terrain2 = new Terrain( -1, 0, loader, texturePack, blendMap );
-		Terrain terrain3 = new Terrain( 0, -1, loader, texturePack, blendMap );
-		Terrain terrain4 = new Terrain( -1, -1, loader, texturePack, blendMap );
+		Terrain terrain1 = new Terrain( 0, 0, loader, texturePack, blendMap, "heightMap" );
+//		Terrain terrain2 = new Terrain( -1, 0, loader, texturePack, blendMap, "heightMap" );
+//		Terrain terrain3 = new Terrain( 0, -1, loader, texturePack, blendMap, "heightMap" );
+//		Terrain terrain4 = new Terrain( -1, -1, loader, texturePack, blendMap, "heightMap" );
 		terrains.add( terrain1 );
-		terrains.add( terrain2 );
-		terrains.add( terrain3 );
-		terrains.add( terrain4 );
+//		terrains.add( terrain2 );
+//		terrains.add( terrain3 );
+//		terrains.add( terrain4 );
 		// end of config
 
 		Camera camera = new Camera( entity );
@@ -91,7 +91,7 @@ public class Main {
 			world.update( 0f );
 			Mouse.update();
 			camera.move();
-			entity.move();
+			entity.move( terrain1 );
 			entityManager.updateAllEntities( 0f );
 			masterRenderer.processEntity( entity );
 //			masterRenderer.processEntity( testEntity );
