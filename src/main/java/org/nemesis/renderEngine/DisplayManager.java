@@ -12,6 +12,7 @@ import java.nio.IntBuffer;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
+import static org.lwjgl.opengl.GL11.glFlush;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -35,6 +36,8 @@ public class DisplayManager {
 	private static final int HEIGHT = 720;
 	private static final String TITLE = "OpenGL 3D Game Engine";
 
+	private static long lastFrameTime;
+	private static float delta;
 	private static Keyboard keyboard = new Keyboard();
 
 	// The window handle
@@ -66,6 +69,7 @@ public class DisplayManager {
 		glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
 		glfwWindowHint( GLFW_VISIBLE, GLFW_FALSE ); // the window will stay hidden after creation
 		glfwWindowHint( GLFW_RESIZABLE, GLFW_TRUE ); // the window will be resizable
+		glfwWindowHint( GLFW_DOUBLEBUFFER, GLFW_FALSE );
 
 		// Create the window
 		window = glfwCreateWindow( WIDTH, HEIGHT, TITLE, NULL, NULL );
@@ -102,7 +106,7 @@ public class DisplayManager {
 		// Make the OpenGL context current
 		glfwMakeContextCurrent( window );
 		// Enable v-sync
-		glfwSwapInterval( 1 );
+		glfwSwapInterval( 0 );
 
 		// Make the window visible
 		glfwShowWindow( window );
@@ -113,6 +117,7 @@ public class DisplayManager {
 		// creates the GLCapabilities instance and makes the OpenGL
 		// bindings available for use.
 		GL.createCapabilities();
+		lastFrameTime = getCurrentTime();
 	}
 
 	/**
@@ -124,10 +129,17 @@ public class DisplayManager {
 	 */
 	public static void updateDisplay () {
 		glfwSwapBuffers( window ); // swap the color buffers
-
+		glFlush();
 		// Poll for window events. The key callback above will only be
 		// invoked during this call.
 		glfwPollEvents();
+		long currentFrameTime = getCurrentTime();
+		delta = ( currentFrameTime - lastFrameTime ) / 1000f;
+		lastFrameTime = currentFrameTime;
+	}
+
+	public static float getFrameTimeSeconds() {
+		return delta;
 	}
 
 	public static int getWindowWidth () {
@@ -155,4 +167,11 @@ public class DisplayManager {
 		glfwSetErrorCallback( null ).free();
 	}
 
+	public static long getWindow () {
+		return window;
+	}
+
+	public static long getCurrentTime () {
+		return ( long ) ( org.lwjgl.glfw.GLFW.glfwGetTime() * 1000 );
+	}
 }

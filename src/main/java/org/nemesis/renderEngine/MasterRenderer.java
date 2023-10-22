@@ -1,11 +1,15 @@
 package org.nemesis.renderEngine;
 
 import org.joml.Matrix4f;
+import org.lwjgl.assimp.AIColor4D;
+import org.lwjgl.assimp.AIMesh;
+import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.opengl.GL11;
+import org.nemesis.components.MeshComponent;
+import org.nemesis.components.ModelComponent;
 import org.nemesis.entities.Camera;
 import org.nemesis.entities.Entity;
 import org.nemesis.entities.Light;
-import org.nemesis.entities.MeshComponent;
 import org.nemesis.models.TexturedModel;
 import org.nemesis.shaders.StaticShader;
 import org.nemesis.shaders.TerrainShader;
@@ -39,17 +43,16 @@ public class MasterRenderer {
 		this.terrainRenderer = new TerrainRenderer( terrainShader, projectionMatrix );
 	}
 
-	public static void enableCulling() {
+	public static void enableCulling () {
 		GL11.glEnable( GL11.GL_CULL_FACE );
 		GL11.glCullFace( GL11.GL_BACK );
 	}
 
-	public static void disableCulling() {
+	public static void disableCulling () {
 		GL11.glDisable( GL11.GL_CULL_FACE );
 	}
 
-	public void render( Light sun, Camera camera)
-	{
+	public void render ( Light sun, Camera camera ) {
 		this.prepare();
 		entityShader.start();
 		entityShader.loadSkyColor( RED, GREEN, BLUE );
@@ -67,28 +70,23 @@ public class MasterRenderer {
 		terrains.clear();
 	}
 
-	public void processTerrain(Terrain terrain)
-	{
+	public void processTerrain ( Terrain terrain ) {
 		terrains.add( terrain );
 	}
 
-	public void processEntity(Entity entity)
-	{
+	public void processEntity ( Entity entity ) {
 		TexturedModel entityModel = entity.getComponent( MeshComponent.class ).mesh;
 		List<Entity> batch = entities.get( entityModel );
-		if(batch != null)
-		{
+		if ( batch != null ) {
 			batch.add( entity );
-		}
-		else
-		{
+		} else {
 			List<Entity> newBatch = new ArrayList<>();
 			newBatch.add( entity );
 			entities.put( entityModel, newBatch );
 		}
 	}
 
-	public void cleanUp() {
+	public void cleanUp () {
 		entityShader.cleanUp();
 		terrainShader.cleanUp();
 	}

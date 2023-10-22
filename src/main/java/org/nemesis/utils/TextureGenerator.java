@@ -11,7 +11,7 @@ public class TextureGenerator {
 	private static final int TEXTURE_HEIGHT = 512;
 
 	@SafeVarargs
-	public static void createMultiNoise ( String outputPath, BiFunction<Double, Double, Double>... methods ) {
+	public static BufferedImage createMultiNoise ( BiFunction<Double, Double, Double>... methods ) {
 		BufferedImage noiseTextureImage = new BufferedImage( TEXTURE_WIDTH, TEXTURE_HEIGHT, BufferedImage.TYPE_INT_RGB );
 		for ( int x = 0 ; x < TEXTURE_WIDTH ; x++ ) {
 			for ( int y = 0 ; y < TEXTURE_HEIGHT ; y++ ) {
@@ -26,11 +26,10 @@ public class TextureGenerator {
 				noiseTextureImage.setRGB( x, y, colorValue );
 			}
 		}
-
-		saveToFile( outputPath, noiseTextureImage );
+		return noiseTextureImage;
 	}
 
-	public static void createSingleNoise ( String outputPath, BiFunction<Double, Double, Double> method ) {
+	public static BufferedImage createSingleNoise ( BiFunction<Double, Double, Double> method ) {
 		BufferedImage noiseTextureImage = new BufferedImage( TEXTURE_WIDTH, TEXTURE_HEIGHT, BufferedImage.TYPE_BYTE_GRAY );
 		for ( int x = 0 ; x < TEXTURE_WIDTH ; x++ ) {
 			for ( int y = 0 ; y < TEXTURE_HEIGHT ; y++ ) {
@@ -41,8 +40,7 @@ public class TextureGenerator {
 				noiseTextureImage.setRGB( x, y, perlinGray );
 			}
 		}
-
-		saveToFile( outputPath, noiseTextureImage );
+		return noiseTextureImage;
 	}
 
 	private static void saveToFile ( String outputPath, BufferedImage noiseTextureImage ) {

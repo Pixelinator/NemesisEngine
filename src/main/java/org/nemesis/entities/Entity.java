@@ -1,5 +1,8 @@
 package org.nemesis.entities;
 
+import org.nemesis.components.Component;
+import org.nemesis.systems.System;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +11,7 @@ import java.util.Map;
 public class Entity {
 
 	private final int id;
-	private final Map<Class<?>, Object> components;
+	private final Map<Class<?>, Component> components;
 
 
 	public Entity ( int id ) {
@@ -20,12 +23,12 @@ public class Entity {
 		return id;
 	}
 
-	public void addComponent(Object component) {
-		components.put( component.getClass(), component );
+	public <T extends Component> void addComponent(T component) {
+		components.put(component.getClass(), component);
 	}
 
-	public <T> T getComponent(Class<T> componentClass) {
-		return componentClass.cast( components.get( componentClass ) );
+	public <T extends Component> T getComponent(Class<T> componentClass) {
+		return componentClass.cast(components.get(componentClass));
 	}
 
 	public <T> List<T> getComponents( Class<T> componentClass ) {
@@ -39,7 +42,7 @@ public class Entity {
 	}
 
 	public void update(float deltaTime) {
-		for(Updateable component : getComponents( Updateable.class )) {
+		for( System component : getComponents( System.class )) {
 			component.update(deltaTime);
 		}
 	}

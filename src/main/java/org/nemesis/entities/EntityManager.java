@@ -1,5 +1,8 @@
 package org.nemesis.entities;
 
+import org.nemesis.components.MeshComponent;
+import org.nemesis.components.TransformComponent;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +21,11 @@ public class EntityManager {
 		Entity entity = new Entity(entityId);
 		entities.put(entityId, entity);
 		return entity;
+	}
+
+	public Player createPlayer( TransformComponent transformComponent, MeshComponent meshComponent) {
+		Entity entity = this.createEntity();
+		return new Player( entity.getId(), transformComponent, meshComponent );
 	}
 
 	public Entity getEntity(int entityId) {

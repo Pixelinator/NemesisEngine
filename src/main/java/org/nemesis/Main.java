@@ -1,13 +1,13 @@
 package org.nemesis;
 
 import org.joml.Vector3f;
+import org.nemesis.components.MeshComponent;
+import org.nemesis.components.ModelComponent;
+import org.nemesis.components.TransformComponent;
 import org.nemesis.entities.*;
 import org.nemesis.models.RawModel;
 import org.nemesis.models.TexturedModel;
-import org.nemesis.renderEngine.DisplayManager;
-import org.nemesis.renderEngine.Loader;
-import org.nemesis.renderEngine.MasterRenderer;
-import org.nemesis.renderEngine.OBJLoader;
+import org.nemesis.renderEngine.*;
 import org.nemesis.terrains.Terrain;
 import org.nemesis.textures.ModelTexture;
 import org.nemesis.textures.TerrainTexture;
@@ -22,20 +22,29 @@ import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 public class Main {
 
 	public static void main ( String[] args ) {
+		World world = new World();
+//		RenderingSystem renderingSystem = new RenderingSystem();
+
 		DisplayManager.createDisplay();
+		Mouse.createCallbacks();
 		Loader loader = new Loader();
 		EntityManager entityManager = new EntityManager();
 		MasterRenderer masterRenderer = new MasterRenderer();
 
-		// put this into a config
-		TerrainTexture backgroundTexture = new TerrainTexture( loader.loadTexture("grassy2") );
-		TerrainTexture rTexture = new TerrainTexture( loader.loadTexture("mud") );
-		TerrainTexture gTexture = new TerrainTexture( loader.loadTexture("grassFlowers") );
-		TerrainTexture bTexture = new TerrainTexture( loader.loadTexture("path") );
-		TerrainTexturePack texturePack = new TerrainTexturePack( backgroundTexture, rTexture, gTexture, bTexture );
-		TerrainTexture blendMap = new TerrainTexture( loader.loadTexture("blendMap") );
+		// Test new render system
+		Entity testEntity = entityManager.createEntity();
+		testEntity.addComponent( new ModelComponent( "yBot" ) );
 
-		ModelTexture texture = new ModelTexture( loader.loadTexture( "purple" ) );
+
+		// put this into a config
+		TerrainTexture backgroundTexture = new TerrainTexture( loader.loadTexture( "grassy2" ) );
+		TerrainTexture rTexture = new TerrainTexture( loader.loadTexture( "mud" ) );
+		TerrainTexture gTexture = new TerrainTexture( loader.loadTexture( "grassFlowers" ) );
+		TerrainTexture bTexture = new TerrainTexture( loader.loadTexture( "path" ) );
+		TerrainTexturePack texturePack = new TerrainTexturePack( backgroundTexture, rTexture, gTexture, bTexture );
+		TerrainTexture blendMap = new TerrainTexture( loader.loadTexture( "blendMap" ) );
+
+		ModelTexture texture = new ModelTexture( loader.loadTexture( "white" ) );
 		texture.setShineDamper( 10 );
 		texture.setReflectivity( 1 );
 		ModelTexture grassTexture = new ModelTexture( loader.loadTexture( "grass" ) );
@@ -43,15 +52,15 @@ public class Main {
 		grassTex.setHasTransparency( true );
 		grassTex.setUseFakeLighting( true );
 		ModelTexture fernTex = new ModelTexture( loader.loadTexture( "fern" ) );
-		RawModel model = OBJLoader.loadObjModel( "dragon", loader );
+		RawModel model = OBJLoader.loadObjModel( "yBot", loader );
 		RawModel grassRaw = OBJLoader.loadObjModel( "grassModel", loader );
 		RawModel fernRaw = OBJLoader.loadObjModel( "fern", loader );
 		TexturedModel texturedModel = new TexturedModel( model, texture );
 		TexturedModel grassModel = new TexturedModel( grassRaw, grassTex );
 		TexturedModel fernModel = new TexturedModel( fernRaw, fernTex );
-		Entity entity = entityManager.createEntity();
-		entity.addComponent( new TransformComponent( new Vector3f( 0, 0, -25 ), new Vector3f( 0, 0, 0 ), new Vector3f( 1, 1, 1 ) ) );
-		entity.addComponent( new MeshComponent( texturedModel ) );
+		Player entity = entityManager.createPlayer(
+				new TransformComponent( new Vector3f( 0, 0, -25 ), new Vector3f( 0, 0, 0 ), new Vector3f( 0.07f, 0.07f, 0.07f ) ),
+				new MeshComponent( texturedModel ) );
 		List<Entity> entities = new ArrayList<>();
 		Random random = new Random();
 		for ( int i = 0 ; i < 500 ; i++ ) {
@@ -76,12 +85,16 @@ public class Main {
 		terrains.add( terrain4 );
 		// end of config
 
-		Camera camera = new Camera();
+		Camera camera = new Camera( entity );
 
 		while ( !glfwWindowShouldClose( DisplayManager.window ) ) {
+			world.update( 0f );
+			Mouse.update();
 			camera.move();
+			entity.move();
 			entityManager.updateAllEntities( 0f );
 			masterRenderer.processEntity( entity );
+//			masterRenderer.processEntity( testEntity );
 			for ( Entity e : entities ) {
 				masterRenderer.processEntity( e );
 			}
@@ -91,6 +104,7 @@ public class Main {
 			masterRenderer.render( light, camera );
 			DisplayManager.updateDisplay();
 		}
+//		testEntity.getComponent( ModelComponent.class ).cleanup();
 		masterRenderer.cleanUp();
 		loader.cleanUp();
 		DisplayManager.closeDisplay();

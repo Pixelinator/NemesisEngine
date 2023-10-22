@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.nemesis.entities.Entity;
-import org.nemesis.entities.TransformComponent;
+import org.nemesis.components.TransformComponent;
 import org.nemesis.models.RawModel;
 import org.nemesis.models.TexturedModel;
 import org.nemesis.shaders.StaticShader;
