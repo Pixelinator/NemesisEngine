@@ -17,10 +17,8 @@ import static org.lwjgl.opengl.GL11.glFlush;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-;
-
 /**
- * This class contains all the methods needed to set-up, maintain, and close a LWJGL display.
+ * This class contains all the methods needed to set up, maintain, and close a LWJGL display.
  * <p>
  * Usage:
  * <p>
@@ -55,7 +53,7 @@ public class DisplayManager {
 		System.out.println( "LWJGL " + Version.getVersion() );
 
 		GLFWNativeGLX.setPath( GL.getFunctionProvider() );
-		// Setup an error callback. The default implementation
+		// Set up an error callback. The default implementation
 		// will print the error message in System.err.
 		GLFWErrorCallback.createPrint( System.err ).set();
 
