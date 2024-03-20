@@ -63,6 +63,8 @@ dependencies {
     implementation "org.lwjgl:lwjgl-yoga"
     implementation "org.lwjgl:lwjgl-zstd"
     implementation "cz.advel.jbullet:jbullet:20101010-1"
+    implementation 'org.openjdk.jmh:jmh-core:1.32'
+    annotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess:1.32'
     runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-assimp::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-bgfx::$lwjglNatives"
